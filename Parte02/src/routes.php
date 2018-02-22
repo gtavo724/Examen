@@ -1,14 +1,18 @@
 <?php
 
-use Slim\Http\Request;
-use Slim\Http\Response;
-
 // Routes
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
 
-$app->get('/[{name}]', function (Request $request, Response $response, array $args) {
-    // Sample log message
-    $this->logger->info("Slim-Skeleton '/' route");
+// Route groups
+$app->group('/api', function () {
+    $this->group('/employees', function () {
+        $this->map(['GET'], '', 'EmployeeController:index');
+        $this->map(['GET'], '/{id}', 'EmployeeController:detailById');
+    });
 
-    // Render index view
-    return $this->renderer->render($response, 'index.phtml', $args);
+    $this->group('/search', function () {
+        $this->map(['POST'], '/employee', 'EmployeeController:searchByEmail');
+        $this->map(['GET'], '/employees/salary', 'EmployeeController:searchBySalary');
+    });
 });
